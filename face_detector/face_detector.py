@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 import paho.mqtt.client as mqtt
 import time
+from matplotlib import pyplot as plt
 
 #Create mqtt functions
 def on_connect(client, userdata, flags, rc):
@@ -43,6 +44,8 @@ face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 #Set video device
 cap = cv2.VideoCapture(1)
 
+thresh_image = None
+
 while(True):
     # Capture frame-by-frame
     ret, frame = cap.read()
@@ -53,12 +56,20 @@ while(True):
     faces = face_cascade.detectMultiScale(gray, 1.3, 5)
     for (x,y,w,h) in faces:
 	cv2.rectangle(gray, (x, y), (x+w, y+h), (0, 255, 0), 2)
-    
-    
-        # Display the resulting frame
-    cv2.imshow('frame',gray)
+        img = cv2.cvtColor(frame[y: y + h, x: x + w], cv2.COLOR_BGR2GRAY)
+        client.publish("w251/faces",img.tostring())
+        cv2.imshow('frame2',img)
+       
 
-    client.publish("w251/faces","IMAGES")
+            #plt.title(titles[i])
+            #plt.xticks([]),plt.yticks([])
+    
+    
+    # Display the resulting frame
+    cv2.imshow('frame',gray)
+    #ret,thresh_img = cv2.threshold(gray,127,255,cv2.THRESH_BINARY)
+
+#    client.publish("w251/faces",thresh_img)
     
     k = cv2.waitKey(30) & 0xff
     if k == 27:
