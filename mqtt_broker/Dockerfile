@@ -5,6 +5,8 @@ RUN apk update && \
     mosquitto
 
 RUN mkdir -p /mosquitto/logs
+RUN touch /mosquitto/mosquitto.log
+RUN chmod o+w /mosquitto/mosquitto.log
 RUN mkdir -p /mosquitto/data
 RUN chmod a+w /mosquitto
 
