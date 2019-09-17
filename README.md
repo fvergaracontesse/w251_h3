@@ -33,6 +33,14 @@ The pipelines consists on an edge infrastructure and cloud infrastructure.  All 
 
 Within this project a main constraint is the bandwidth, cause we are sending images from an edge device to the cloud and the save to object file also through the network. The volume of images processed is big, cause every movement in front of the camera is processed as a frame and face detection is sent to the cloud. Images received per minute vs images generated could be a measure of quality. It does not matter in this case that some images get lost, but speed could be a mayor concern.
 
+# Install docker
+
+```
+sudo apt-get update
+sudo apt install docker.io
+
+```
+
 # Build images
 
 ## Face detector - Edge
@@ -154,8 +162,11 @@ docker run --rm --network hw03 /data/face_detector:/face_detector -ti image_to_f
 
 ```
 
-## Create cloud instance (VS)
+## Mosquito Broker - Cloud
 
 ```
-ibmcloud sl vs create --datacenter=dal09 --domain=fvergara.cloud --hostname=w255 --os=UBUNTU_16_64 --cpu=2 --memory=2048 --billing=hourly --key=1555046
+
+docker run -p 1883:1883 -p 9001:9001 -v mosquitto.conf:/mosquitto/config/mosquitto.conf -v /data:/mosquitto/data -v /logs:/mosquitto/logs -ti alpine_mosquitto_broker_cloud
+docker run -d -it -p 1883:1883 -p 9001:9001 -v /root/mosquitto.conf:/mosquitto/config/mosquitto.conf -v /var/mosquitto/data:/mosquitto/data -v /var/mosquitto/log:/mosquitto/log alpine_mosquitto_broker_cloud
+
 ```
