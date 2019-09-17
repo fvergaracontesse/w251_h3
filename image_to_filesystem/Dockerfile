@@ -36,5 +36,5 @@ WORKDIR /
 
 #WORKDIR /
 
-CMD ["python", "images_to_filesystem.py"]
+#CMD ["python", "images_to_filesystem.py"]
 
