@@ -17,6 +17,9 @@ WORKDIR /tmp
 RUN apt install -y python-pip vim-tiny mosquitto-clients
 RUN pip install numpy
 RUN pip install paho-mqtt
+RUN pip install matplotlib
+RUN pip install pypng
+
 
 
 WORKDIR /
