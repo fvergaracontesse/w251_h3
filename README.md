@@ -7,6 +7,9 @@
 ## Face detector - Edge
 
 ```
+
+mkdir face_detector
+
 cd face_detector
 
 docker build -t face_detector .
@@ -67,17 +70,19 @@ python face_detector.py
 
 ```
 
-## Mosquito Broker
+## Mosquito Broker - Edge
 
 ```
-docker run --name mosquitto --network hw03 -p 1883:1883 -ti alpine_mosquitto_broker_edge
+docker run --name broker --network hw03 -p 1883:1883 -ti alpine_mosquitto_broker_edge
+
+docker run -d --name broker --network hw03 -it -p 1883:1883 -p 9001:9001 -v ~/mosquitto.conf:/mosquitto/config/mosquitto.conf -v ~/mosquitto/data:/mosquitto/data -v ~/mosquitto/logs:/mosquitto/logs alpine_mosquitto_broker_edge
 
 ```
 
-## Mosquito forwarder
+## Mosquito forwarder - Edge
 
 ```
-docker run --name forwarder --network hw03 -ti alpine_mosquitto_forwarder
+docker run --name forwarder --network hw03 -ti alpine_mosquitto_forwarder_edge
 
 ```
 ## Mosquitto broker -  Cloud
@@ -92,6 +97,14 @@ docker exec -it <container_id> /bin/sh
 #create user and password
 
 mosquitto_passwd -c /mosquitto/data/passwd face_detector
+
+#testing
+#publish on local computer
+
+mosquitto_pub -h 169.50.133.249 -t "w251/face_detector" -m "Testing bridged brokers!" -u face_detector -P w251faces
+#subscribe on cloud broker
+mosquitto_sub -h localhost -v -t "w251/face_detector"
+
 
 ```
 
