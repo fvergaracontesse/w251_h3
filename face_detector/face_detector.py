@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import paho.mqtt.client as mqtt
+import pickle
 import time
 
 
@@ -22,7 +23,7 @@ def on_connect(client, userdata, flags, rc):
 #Connect to mqtt broker
 Connected         = False
 
-broker            = "mosquitto"
+broker            = "broker"
 
 port              = 1883
 user              = "face_detector"
@@ -57,7 +58,9 @@ while(True):
     for (x,y,w,h) in faces:
 	cv2.rectangle(gray, (x, y), (x+w, y+h), (0, 255, 0), 2)
         img = cv2.cvtColor(frame[y: y + h, x: x + w], cv2.COLOR_BGR2GRAY)
-        client.publish("w251/faces",img.tostring())
+        #client.publish("w251/face_detector",img.tostring())
+        client.publish("w251/face_detector", pickle.dumps(img))
+        #client.publish("w251/face_detector","CARA")
         cv2.imshow('frame2',img)
 
 
